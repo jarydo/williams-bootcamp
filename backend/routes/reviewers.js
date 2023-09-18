@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import ReviewersService from "../services/reviewersService";
-import { RestaurantRequestResource } from "../resources/restaurantRequestResource";
+import { ReviewerRequestResource } from "../resources/reviewerRequestResource";
 
 /**
  * create a router, which handles requests sent to a given URL
@@ -31,7 +31,7 @@ router.get("/", async (_req, res) => {
     res.status(200).json(result.value);
 });
 
-router.get("/:id", async (_req, res) => {
+router.get("/:id", async (req, res) => {
     /* the service layer handles business logic, delegate the fetching of restaurants to RestaurantService */
     const result = await ReviewersService.getReviewer(req.params.id);
 
@@ -47,75 +47,75 @@ router.get("/:id", async (_req, res) => {
 });
 
 
-// /**
-//  * handle HTTP POST requests to the root URL
-//  * the restaurant specified in the request body should be created, and the created restaurant should be returned
-//  */
-// router.post("/", async (req, res) => {
-//     /**
-//      * create a RestaurantRequestResource object instead of using the raw req.body
-//      * data validators and transformations are applied when constructing the resource,
-//      * this allows downstream code to make safe assumptions about the data
-//      */
-//     let restaurant;
-//     try {
-//         /* jump into the RestaurantRequestResource definition to see the validators and transformations */
-//         restaurant = new RestaurantRequestResource(req.body);
-//     } catch (error) {
-//         /* failure to create the resource means req.body contains invalid data, send HTTP status code 400 (Bad Request) */
-//         res.status(400).json(error.message);
-//         return;
-//     }
+/**
+ * handle HTTP POST requests to the root URL
+ * the restaurant specified in the request body should be created, and the created restaurant should be returned
+ */
+router.post("/", async (req, res) => {
+    /**
+     * create a RestaurantRequestResource object instead of using the raw req.body
+     * data validators and transformations are applied when constructing the resource,
+     * this allows downstream code to make safe assumptions about the data
+     */
+    let reviewer;
+    try {
+        /* jump into the RestaurantRequestResource definition to see the validators and transformations */
+        reviewer = new ReviewerRequestResource(req.body);
+    } catch (error) {
+        /* failure to create the resource means req.body contains invalid data, send HTTP status code 400 (Bad Request) */
+        res.status(400).json(error.message);
+        return;
+    }
 
-//     /* again, let the service layer handle the business logic of creating a restaurant */
-//     const result = await RestaurantService.createRestaurant(restaurant);
+    /* again, let the service layer handle the business logic of creating a restaurant */
+    const result = await ReviewersService.createReviewer(reviewer);
 
-//     if (result.errorMessage) {
-//         res.status(500).json(result.errorMessage);
-//         return;
-//     }
+    if (result.errorMessage) {
+        res.status(500).json(result.errorMessage);
+        return;
+    }
 
-//     /* HTTP status code 201 means Created */
-//     res.status(201).json(result.value);
-// });
-
-
-// /**
-//  * handle HTTP PUT requests to the root URL with an id parameter
-//  * the restaurant with the given id should be updated with req.body, the updated restaurant should then be returned
-//  */
-// router.put("/:id", async (req, res) => {
-//     /* same validations as above */
-//     let restaurant;
-//     try {
-//         restaurant = new RestaurantRequestResource(req.body);
-//     } catch (error) {
-//         res.status(400).json(error.message);
-//         return;
-//     }
-
-//     const result = await RestaurantService.updateRestaurant(req.params.id, restaurant);
-
-//     if (result.errorMessage) {
-//         res.status(500).json(result.errorMessage);
-//         return;
-//     }
-
-//     res.status(200).json(result.value);
-// });
+    /* HTTP status code 201 means Created */
+    res.status(201).json(result.value);
+});
 
 
-// /* handle HTTP DELETE requests to the root URL with an id parameter */
-// router.delete("/:id", async (req, res) => {
-//     const result = await RestaurantService.deleteRestaurant(req.params.id);
+/**
+ * handle HTTP PUT requests to the root URL with an id parameter
+ * the restaurant with the given id should be updated with req.body, the updated restaurant should then be returned
+ */
+router.put("/:id", async (req, res) => {
+    /* same validations as above */
+    let reviewer;
+    try {
+        reviewer = new ReviewerRequestResource(req.body);
+    } catch (error) {
+        res.status(400).json(error.message);
+        return;
+    }
+
+    const result = await ReviewersService.updateReviewer(req.params.id, reviewer);
+
+    if (result.errorMessage) {
+        res.status(500).json(result.errorMessage);
+        return;
+    }
+
+    res.status(200).json(result.value);
+});
+
+
+/* handle HTTP DELETE requests to the root URL with an id parameter */
+router.delete("/:id", async (req, res) => {
+    const result = await ReviewersService.deleteReviewer(req.params.id);
     
-//     if (result.errorMessage) {
-//         res.status(500).json(result.errorMessage);
-//         return;
-//     }
+    if (result.errorMessage) {
+        res.status(500).json(result.errorMessage);
+        return;
+    }
 
-//     /* HTTP status code 204 means No Content */
-//     res.status(204).json();
-// })
+    /* HTTP status code 204 means No Content */
+    res.status(204).json();
+})
 
 export default router;
