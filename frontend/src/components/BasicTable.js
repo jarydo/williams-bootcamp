@@ -18,11 +18,37 @@ const getTableHeaders = (object = {}) => {
 const renderRows = (row = {}) => {
   return (
     <tr key={row.id}>
-      {Object.values(row).map(
-        (value, i) => <td key={i}>{value}</td>
-      )}
+      {Object.keys(row).map((key, i) => {
+        if (key === 'rating') {
+          return (
+            <td key={i}>
+              {renderRatingStars(row[key])}
+            </td>
+          );
+        } else {
+          return (
+            <td key={i}>{row[key]}</td>
+          );
+        }
+      })}
     </tr>
   )
+}
+
+/**
+ * Renders star icons based on the rating value
+ * @param {number} rating - The rating value (0-5)
+ */
+const renderRatingStars = (rating) => {
+  const stars = [];
+  for (let i = 0; i < 5; i++) {
+    if (i < rating) {
+      stars.push(<span key={i} className="star-icon filled-star">★</span>);
+    } else {
+      stars.push(<span key={i} className="star-icon">☆</span>);
+    }
+  }
+  return stars;
 }
 
 const BasicTable = ({ data }) => {
@@ -32,7 +58,7 @@ const BasicTable = ({ data }) => {
         <tr>
           {getTableHeaders(data[0]).map(
             headerName => <th key={headerName}>{headerName}</th>
-            )}
+          )}
         </tr>
         {data.map(renderRows)}
       </tbody>
