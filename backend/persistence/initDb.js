@@ -8,7 +8,7 @@ import Restaurant from "./models/restaurant";
 import { SEED_RESTAURANT_DATA } from "./seedRestaurantData";
 
 /* change to true if you would like to seed the DB with test restaurant data (will drop any existing data) */
-const SEED_DB = false;
+const SEED_DB = true;
 
 export function connectDb() {
   /* mongoose provides abstracted methods for interacting with MongoDB, like connecting to the database */
