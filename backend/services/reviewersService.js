@@ -99,5 +99,18 @@ async function getReviewer(id) {
 //     }
 // }
 
-const ReviewerService = { getReviewer, getReviewers };
+async function addReview(id, review) {
+    try {
+        let modifiedReviewer = await Reviewer.findById(id);
+        modifiedReviewer.reviews.push(review);
+        const resultReviewer = await Reviewer.findByIdAndUpdate(id, modifiedReviewer);
+        console.log(modifiedReviewer)
+
+        return new ResponseResource(new ReviewerResponseResource(resultReviewer));
+    } catch (error) {
+        return new ResponseResource(null, error.message);
+    }
+}
+
+const ReviewerService = { getReviewer, getReviewers, addReview };
 export default ReviewerService;

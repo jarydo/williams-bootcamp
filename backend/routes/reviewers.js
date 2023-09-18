@@ -118,4 +118,16 @@ router.get("/:id", async (_req, res) => {
 //     res.status(204).json();
 // })
 
+router.patch("/:id/review", async (req, res) => {
+    const result = await ReviewersService.addReview(req.params.id, req.body);
+
+    if (result.errorMessage) {
+        res.status(500).json(result.errorMessage);
+        return;
+    }
+
+    /* HTTP status code 204 means No Content */
+    res.status(204).json();
+})
+
 export default router;
