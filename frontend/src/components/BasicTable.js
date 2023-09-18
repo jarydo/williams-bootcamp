@@ -88,3 +88,4 @@ BasicTable.propTypes = {
 BasicTable.defaultProps = {
   data: []
 };
+
