@@ -43,7 +43,7 @@ async function getReviewer(id) {
          * calling Restaurant.find() will query our restaurant collection in MongoDB and return the results asynchronously
          * find() optionally takes a filter parameter, but we leave it blank since we want to retrieve all restaurants
          */
-        const reviewer = await Reviewer.findbyId(id);
+        const reviewer = await Reviewer.findById(id);
 
         /**
          * note (1): suppose in the future we want to return the average restaurant rating along with the restaurants
@@ -54,50 +54,50 @@ async function getReviewer(id) {
          * convert the raw DB records to a list of RestaurantResponseResource and wrap in a ResponseResource
          * jump into the RestaurantResponseResource definition to view the transformations applied
          */
-        return new ResponseResource(new reviewerResponseResource(reviewer));
+        return new ResponseResource(new ReviewerResponseResource(reviewer));
     } catch (error) {
         return new ResponseResource(null, error.message);
     }
 }
 
 
-// async function createReview(review) {
-//     try {
-//         /* again, using the mongoose model to insert a new restaurant into MongoDB */
-//         const newRestaurant = await Restaurant.create(restaurant);
-//         return new ResponseResource(new RestaurantResponseResource(newRestaurant));
-//     } catch (error) {
-//         return new ResponseResource(null, error.message);
-//     }
-// }
+async function createReviewer(reviewer) {
+    try {
+        /* again, using the mongoose model to insert a new restaurant into MongoDB */
+        const newReviewer = await Reviewer.create(reviewer);
+        return new ResponseResource(new ReviewerResponseResource(newReviewer));
+    } catch (error) {
+        return new ResponseResource(null, error.message);
+    }
+}
 
 
-// async function updateRestaurant(id, restaurant) {
-//     try {
-//         /* unlike create(), findByIdAndUpdate() does not automatically run validators, so we specify it as an option */
-//         const modifiedRestaurant =
-//             await Restaurant.findByIdAndUpdate(id, restaurant, { new: true, runValidators: true });
-//         return new ResponseResource(new RestaurantResponseResource(modifiedRestaurant));
-//     } catch (error) {
-//         return new ResponseResource(null, error.message);
-//     }
-// }
+async function updateReviewer(id, reviewer) {
+    try {
+        /* unlike create(), findByIdAndUpdate() does not automatically run validators, so we specify it as an option */
+        const modifiedReviewer =
+            await Reviewer.findByIdAndUpdate(id, reviewer, { new: true, runValidators: true });
+        return new ResponseResource(new ReviewerResponseResource(modifiedReviewer));
+    } catch (error) {
+        return new ResponseResource(null, error.message);
+    }
+}
 
-// async function deleteRestaurant(id) {
-//     try {
-//         const deleted = await Restaurant.findByIdAndDelete(id);
+async function deleteReviewer(id) {
+    try {
+        const deleted = await Reviewer.findByIdAndDelete(id);
 
-//         // TODO: this should ideally be handled earlier, should be 400 instead of 500 error
-//         if (!deleted) {
-//             throw new Error(`Attempted to delete restaurant with id = ${id} but it was not found`);
-//         }
+        // TODO: this should ideally be handled earlier, should be 400 instead of 500 error
+        if (!deleted) {
+            throw new Error(`Attempted to delete reviewer with id = ${id} but it was not found`);
+        }
 
-//         return new ResponseResource(null);
-//     } catch (error) {
-//         console.log(error)
-//         return new ResponseResource(null, error.message);
-//     }
-// }
+        return new ResponseResource(null);
+    } catch (error) {
+        console.log(error)
+        return new ResponseResource(null, error.message);
+    }
+}
 
 async function addReview(id, review) {
     try {
@@ -112,5 +112,5 @@ async function addReview(id, review) {
     }
 }
 
-const ReviewerService = { getReviewer, getReviewers, addReview };
+const ReviewerService = { getReviewer, getReviewers, createReviewer, updateReviewer, deleteReviewer, addReview };
 export default ReviewerService;
